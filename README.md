@@ -6,12 +6,6 @@ LICENSE GPL
 Solves proof of work to mine supported ERC20 tokens.  This is a CPU miner. (See Releases for links to GPU miners.)
 
 
-
-### Update 1.6 - Config Files For Days
-
-This new build uses miner-config.js for setting parameters and no longer has an active command line.  If you do not have an Ethereum account, it is recommended that you use Metamask to generate one.
-
-
 ### Official Releases Downloads
 
 [Download Packaged Releases](https://github.com/0xbitcoin/0xbitcoin-miner/blob/master/RELEASES.md)
@@ -39,7 +33,7 @@ This new build uses miner-config.js for setting parameters and no longer has an 
 
 
 ### NOT WORKING ?
-Make sure you have build-essential installed to compile C code and make sure you have python3.
+Make sure you have build-essential installed to compile C code and make sure you have python3.   (probably 3.10) ! 
 
 Try these commands:
 > node-gyp rebuild
@@ -66,9 +60,12 @@ REMINDER: You >can< set the web3provider to a ropsten, mainnet, or other type of
 ---------------
 
 ### Getting Started
-1. Duplicate the 'miner-config-sample.json' file and rename it to 'miner-config.json'
-2. Set the parameters in this file appropriately
-3. In the console, run the command 'node index.js' to start mining
+1. Install NodeJS v10
+2. Clone this repo 
+3. Install dependencies with "npm install" 
+4. Duplicate the 'miner-config-sample.json' file and rename it to 'miner-config.json'
+5. Set the parameters in this file appropriately
+6. In the console, run the command 'npm run miner' to start mining
 
 
 
