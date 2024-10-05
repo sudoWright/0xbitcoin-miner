@@ -4,10 +4,10 @@ const Miner = require("./0xbitcoinminer-accel");
 
 const miningLogger = require("./lib/mining-logger");
 
-
+const fs = require('fs');
 
 var pjson = require('./package.json');
-var minerConfig = require('./miner-config.json');
+//var minerConfig = require('./miner-config.json');
 
 
 var Web3 = require('web3')
@@ -28,10 +28,13 @@ console.log('Welcome to 0xBitcoin Miner!')
 console.log('Version: ',pjson.version)
 console.log('\n')
 
+const minerConfigRaw = fs.readFileSync('./miner-config.json');
+const minerConfig = JSON.parse(minerConfigRaw);
+
 
 function loadConfig()
 {
-  console.log('loaded config: ', minerConfig   )
+
 
   web3.setProvider(minerConfig.web3provider)
 

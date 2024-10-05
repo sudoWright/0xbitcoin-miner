@@ -1,6 +1,6 @@
 {
   "name": "0xbitcoin-miner",
-  "version": "1.6.02",
+  "version": "1.6.04",
   "engines": {
     "node": ">=18.0"
   },
