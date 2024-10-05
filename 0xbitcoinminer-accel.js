@@ -185,8 +185,37 @@ module.exports =  {
           //if we are in a pool, keep mining again because our soln probably didnt solve the whole block and we want shares
         //   bResume = true;
           CPUMiner.setChallengeNumber(this.challengeNumber);
-         bResume = true;
+          bResume = true;
         }
+
+
+          // ---- improved auto restart   helpful at low diff ---- 
+
+           if(miningStyle == 'solo') {
+              let currentTime = Date.now();
+
+              const delayThreshold = 15 *  1000; // 15 seconds 
+
+       
+
+                // Check if not resuming and not currently mining
+                if (!bResume && !this.mining) {
+                  // Check if the time since last mined is greater than the threshold
+                  if (this.lastMinedAt < currentTime - delayThreshold) {
+                    bResume = true;
+
+                    this.lastMinedAt = currentTime;
+
+                    console.log("force mining restart due to delay threshold");
+                  }
+                }
+
+                // If currently mining, update the last mined time
+                if (this.mining || !this.lastMinedAt) {
+                  this.lastMinedAt = currentTime;
+                }
+              }
+          /// -----  
 
 
           if(this.challengeNumber != miningParameters.challengeNumber)
@@ -217,6 +246,7 @@ module.exports =  {
 
 
                if (bResume && !this.mining) {
+
                    console.log("Restarting mining operations");
 
                    try
@@ -326,6 +356,8 @@ module.exports =  {
                 verifyAndSubmit(sol);
                 }catch(e)
                 {
+                
+                  
                   console.log(e)
                 }
             }
