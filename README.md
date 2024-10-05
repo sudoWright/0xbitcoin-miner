@@ -15,7 +15,7 @@ Solves proof of work to mine supported ERC20 tokens.  This is a CPU miner. (See 
 ### Building from Source
 
 #### Setup (Windows/Linux)
-1. Install NodeJS 10 (nvm install 10)
+1. Install NodeJS 20 (nvm install 20)
 2. Clone/download the project
 3. Open a terminal, cd into the project folder and run 'npm install' to install dependencies
 4. Run the command 'npm run build' to build C files with node-gyp
@@ -23,13 +23,13 @@ Solves proof of work to mine supported ERC20 tokens.  This is a CPU miner. (See 
 7. Start the miner with 'npm run miner'
 
 #### Setup (Mac)
-1. Install Homebrew & NodeJS 10
+1. Install Homebrew & NodeJS 20
 2. Run 'brew install yarn' to install yarn package manager
 3. Clone/download this project
 4. Open a terminal, cd into the project folder and run 'yarn'
 5. Run the command 'yarn build' to build C files with node-gyp
 6. Set up the config file 'miner-config.json' (duplicate miner-config-sample as a reference)
-7. Start the miner with 'node index.js'
+7. Start the miner with 'node index.js' or 'npm run miner'
 
 
 ### NOT WORKING ?
