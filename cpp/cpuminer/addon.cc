@@ -1,29 +1,16 @@
-/*********************************************************************
- * NAN - Native Abstractions for Node.js
- *
- * Copyright (c) 2017 NAN contributors
- *
- * MIT License <https://github.com/nodejs/nan/blob/master/LICENSE.md>
- ********************************************************************/
-
 #include <nan.h>
-
 #include "cpuminer.h"
-
 
 namespace miner {
 
   using namespace Nan;
 
-
   ::CpuMiner* cpuminer = nullptr;
 
-
-  //call C++ dtors:
+  // Call C++ destructors
   void cleanup(void* p) {
     delete reinterpret_cast<CpuMiner*>(p);
   }
-
 
   class Miner : public AsyncWorker {
     public:
@@ -54,13 +41,11 @@ namespace miner {
           New<v8::String>(cpuminer->solution()).ToLocalChecked()
         };
 
-        callback->Call(2, argv);
+        Nan::Call(callback->GetFunction(), Nan::GetCurrentContext()->Global(), 2, argv);
       }
   };
 
   // Run an asynchronous function
-  //  First and only parameter is a callback function
-  //  receiving the solution when found
   NAN_METHOD(run) {
     Callback *callback = new Callback(To<v8::Function>(info[0]).ToLocalChecked());
     AsyncQueueWorker(new Miner(callback));
@@ -78,6 +63,7 @@ namespace miner {
     }
     info.GetReturnValue().SetUndefined();
   }
+
   NAN_METHOD(setDifficultyTarget) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
@@ -85,6 +71,7 @@ namespace miner {
     }
     info.GetReturnValue().SetUndefined();
   }
+
   NAN_METHOD(setMinerAddress) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
@@ -93,8 +80,6 @@ namespace miner {
     info.GetReturnValue().SetUndefined();
   }
 
-  // Get the number of hashes performed until now
-  //  and reset it to 0
   NAN_METHOD(hashes) {
     uint32_t const value = Solver::hashes;
     Solver::hashes = 0;
@@ -103,37 +88,48 @@ namespace miner {
 
   // Defines the functions our add-on will export
   NAN_MODULE_INIT(Init) {
+    v8::Local<v8::Context> context = target->GetCreationContext().ToLocalChecked();
+
+
     Set(target
       , New<v8::String>("run").ToLocalChecked()
-      , New<v8::FunctionTemplate>(run)->GetFunction());
+      , New<v8::FunctionTemplate>(run)->GetFunction(context).ToLocalChecked());
 
     Set(target
       , New<v8::String>("stop").ToLocalChecked()
-      , New<v8::FunctionTemplate>(stop)->GetFunction());
+      , New<v8::FunctionTemplate>(stop)->GetFunction(context).ToLocalChecked());
 
     Set(target
       , New<v8::String>("setChallengeNumber").ToLocalChecked()
-      , New<v8::FunctionTemplate>(setChallengeNumber)->GetFunction()
+      , New<v8::FunctionTemplate>(setChallengeNumber)->GetFunction(context).ToLocalChecked()
     );
 
     Set(target
       , New<v8::String>("setDifficultyTarget").ToLocalChecked()
-      , New<v8::FunctionTemplate>(setDifficultyTarget)->GetFunction()
+      , New<v8::FunctionTemplate>(setDifficultyTarget)->GetFunction(context).ToLocalChecked()
     );
 
     Set(target
       , New<v8::String>("setMinerAddress").ToLocalChecked()
-      , New<v8::FunctionTemplate>(setMinerAddress)->GetFunction()
+      , New<v8::FunctionTemplate>(setMinerAddress)->GetFunction(context).ToLocalChecked()
     );
 
     Set(target
       , New<v8::String>("hashes").ToLocalChecked()
-      , New<v8::FunctionTemplate>(hashes)->GetFunction()
+      , New<v8::FunctionTemplate>(hashes)->GetFunction(context).ToLocalChecked()
     );
 
+    
     cpuminer = new CpuMiner;
 
-    node::AtExit(cleanup, cpuminer);
+    // Obtain the current environment and pass it to AtExit
+    node::Environment* env = node::GetCurrentEnvironment(context);
+    if (env != nullptr) {
+      node::AtExit(env, cleanup, cpuminer);
+    } else {
+      // Handle the case where env is null, though it shouldn't happen here
+      fprintf(stderr, "Error: Environment is null\n");
+    }
   }
 
   NODE_MODULE(cpumining, Init)
