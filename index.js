@@ -9,8 +9,7 @@ const fs = require('fs');
 var pjson = require('./package.json');
 //var minerConfig = require('./miner-config.json');
 
-
-var Web3 = require('web3')
+const { ethers } = require("ethers");
 
 var ContractInterface = require("./contracts/DeployedContractInfo")
 
@@ -18,9 +17,9 @@ var ContractInterface = require("./contracts/DeployedContractInfo")
 var NetworkInterface = require("./lib/network-interface");
 
 var PoolInterface = require("./lib/pool-interface");
-
-var web3 = new Web3( );
-
+ 
+var provider ;
+var wallet ;
 
 var running = true;
 
@@ -34,19 +33,19 @@ const minerConfig = JSON.parse(minerConfigRaw);
 
 function loadConfig()
 {
+  provider = new ethers.providers.JsonRpcProvider(minerConfig.web3provider);
+  wallet = new ethers.Wallet(minerConfig.mining_account_private_key, provider);
 
-
-  web3.setProvider(minerConfig.web3provider)
-
+   
 
   miningLogger.init();
   //NetworkInterfaces
 
-    NetworkInterface.init(web3, miningLogger, minerConfig.contract_address, minerConfig.gas_price_gwei, minerConfig.mining_account_private_key);
-    PoolInterface.init(web3, miningLogger, minerConfig.contract_address, minerConfig.pool_url);
+    NetworkInterface.init(ethers, provider, wallet, miningLogger, minerConfig.contract_address, minerConfig.gas_price_gwei);
+    PoolInterface.init(ethers, provider, wallet, miningLogger, minerConfig.contract_address, minerConfig.pool_url);
 
 
-  Miner.init( minerConfig.contract_address, web3,  miningLogger  );
+  Miner.init( minerConfig.contract_address, ethers, wallet, miningLogger  );
   Miner.setNetworkInterface(NetworkInterface);
   Miner.setPoolInterface(PoolInterface);
 }
@@ -56,7 +55,12 @@ async function initMining()
 {
  
 
-  Miner.mine(minerConfig.mining_style,minerConfig.mining_account_public_address,minerConfig.mining_account_private_key,minerConfig.pool_url,minerConfig.gas_price_gwei )
+  Miner.mine(
+    minerConfig.mining_style,
+    wallet,
+    provider, 
+    minerConfig.pool_url,
+    minerConfig.gas_price_gwei )
 
 
 }

@@ -22,7 +22,7 @@ const COLLECT_MINING_PARAMS_TIMEOUT = 4000;
 
 module.exports =  {
 
-    async init(contractAddress, web3, miningLogger )
+    async init(contractAddress, ethers, wallet,  miningLogger )
   //  async init(web3, subsystem_command, vault, networkInterface, miningLogger)
     {
 
@@ -36,7 +36,8 @@ module.exports =  {
             CPUMiner.stop();
         });
 
-        tokenContract =  new web3.eth.Contract(tokenContractJSON.abi, contractAddress );
+     //   tokenContract =  new web3.eth.Contract(tokenContractJSON.abi, contractAddress );
+        tokenContract = new ethers.Contract(contractAddress, tokenContractJSON.abi, wallet);
 
         this.miningLogger = miningLogger;
 
@@ -46,9 +47,13 @@ module.exports =  {
 
 
 
-    async mine(miningStyle, minerAccountAddress, minerPrivateKey, poolURL, gasPriceGwei)
+    async mine(miningStyle, wallet, provider, poolURL, gasPriceGwei)
     {
       console.log('init mining'  )
+
+
+      let minerAccountAddress = wallet.address;
+
 
       this.miningStyle = miningStyle;
 
@@ -91,7 +96,10 @@ module.exports =  {
          miningTarget: ''
        };
 
-       await self.initMiningProcedure(miningStyle, minerAccountAddress,miningParameters );
+
+      
+
+       await self.initMiningProcedure(miningStyle, minerAccountAddress, miningParameters );
 
       self.miningLogger.appendToStandardLog("Begin mining for " + minerAccountAddress + " with gasprice " +  gasPriceGwei );
 
@@ -191,7 +199,7 @@ module.exports =  {
 
           // ---- improved auto restart   helpful at low diff ---- 
 
-           if(miningStyle == 'solo') {
+         /*  if(miningStyle == 'solo') {
               let currentTime = Date.now();
 
               const delayThreshold = 15 *  1000; // 15 seconds 
@@ -214,7 +222,7 @@ module.exports =  {
                 if (this.mining || !this.lastMinedAt) {
                   this.lastMinedAt = currentTime;
                 }
-              }
+              }*/
           /// -----  
 
 
