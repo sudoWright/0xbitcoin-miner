@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "cryptr": "^3.0.0",
-    "ethereumjs-tx": "^1.3.3",
+    "ethereumjs-tx": "^2.1.2",
     "jayson": "^2.0.5",
     "js-sha3": "^0.7.0",
     "leftpad": "^0.0.1",
