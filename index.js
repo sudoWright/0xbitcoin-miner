@@ -41,7 +41,7 @@ function loadConfig()
   miningLogger.init();
   //NetworkInterfaces
 
-    NetworkInterface.init(ethers, provider, wallet, miningLogger, minerConfig.contract_address, minerConfig.gas_price_gwei);
+    NetworkInterface.init(ethers, provider, wallet, miningLogger, minerConfig.contract_address, minerConfig.gas_price_gwei, minerConfig.priority_gas_fee_gwei);
     PoolInterface.init(ethers, provider, wallet, miningLogger, minerConfig.contract_address, minerConfig.pool_url);
 
 
@@ -60,7 +60,9 @@ async function initMining()
     wallet,
     provider, 
     minerConfig.pool_url,
-    minerConfig.gas_price_gwei )
+    minerConfig.gas_price_gwei,
+    minerConfig.priority_gas_fee_gwei
+  )
 
 
 }

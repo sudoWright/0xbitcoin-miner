@@ -47,7 +47,7 @@ module.exports =  {
 
 
 
-    async mine(miningStyle, wallet, provider, poolURL, gasPriceGwei)
+    async mine(miningStyle, wallet, provider, poolURL, gasPriceGwei, priorityGasFeeGwei)
     {
       console.log('init mining'  )
 
@@ -70,7 +70,9 @@ module.exports =  {
 
         console.log('Selected mining contract:',  tokenContract.address  );
         console.log('\n')
-        console.log("Gas price is "+ gasPriceGwei + ' gwei');
+        console.log("Max Gas price is "+ gasPriceGwei + ' gwei');
+        console.log('\n')
+        console.log("Priority Gas fee is "+ priorityGasFeeGwei + ' gwei');
         console.log('\n')
 
       }else if(miningStyle == "pool" )
